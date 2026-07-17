@@ -25,8 +25,23 @@ export default function App() {
   const [tables, setTables] = useState([]);
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
+    (params) => {
+      const sourceTable = tables.find((t) => t.id === params.source);
+      const targetTable = tables.find((t) => t.id === params.target);
+      const edgeName = sourceTable && targetTable 
+        ? `${sourceTable.name.toLowerCase()}_${targetTable.name.toLowerCase()}_rel` 
+        : `rel_${Date.now()}`;
+        
+      setEdges((eds) => addEdge({
+        ...params,
+        data: {
+          name: edgeName,
+          cardinality: 'One to One',
+          compositeKeys: [],
+        }
+      }, eds));
+    },
+    [setEdges, tables],
   );
 
   const handleAddTable = (tableName) => {
@@ -100,6 +115,8 @@ export default function App() {
 
         <RightSidebar
           tables={tables}
+          edges={edges}
+          setEdges={setEdges}
           onAddTable={handleAddTable}
           onUpdateTable={handleUpdateTable}
           onDeleteTable={handleDeleteTable}
