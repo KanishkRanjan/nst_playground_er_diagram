@@ -30,6 +30,10 @@ export default function RightSidebar() {
         </button>
       </div>
 
+      {/* Action Bar */}
+      <div className="sidebar-action-bar">
+        {activeTab === 'tables' && (
+          <button className="btn-add-table">
       {/* Action Bar (Tables Tab Only) */}
       {activeTab === 'tables' && (
         <div className="flex gap-3 p-4 box-border items-center">
@@ -40,7 +44,19 @@ export default function RightSidebar() {
             </svg>
             <span>Add Table</span>
           </button>
+        )}
 
+        <div className="search-input-wrapper">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           <div className="flex-1 h-9 flex items-center gap-2 px-3 bg-neutral-100 border border-neutral-300 rounded-lg text-neutral-700 box-border transition-all duration-200 focus-within:border-brand-500 focus-within:bg-neutral-0 focus-within:ring-2 focus-within:ring-brand-100">
             <svg className="shrink-0 text-neutral-600" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
@@ -55,7 +71,7 @@ export default function RightSidebar() {
             />
           </div>
         </div>
-      )}
+      </div>
     </aside>
   );
 }
