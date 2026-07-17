@@ -22,6 +22,8 @@ def validate_endpoint(payload: dict = Body(...)):
         return validate(expected_solution, student_solution, payload.get('algorithm'))
     except (SchemaError, KeyError, TypeError) as e:
         raise HTTPException(422, f'malformed diagram: {e!r}')
+    except ValueError as e:
+        raise HTTPException(422, str(e))
     except EngineError as e:
         raise HTTPException(500, str(e))
 
@@ -80,5 +82,7 @@ def questions_submit(question_id: int, payload: dict = Body(...)):
         return validate(question['solution'], student, payload.get('algorithm'))
     except (SchemaError, KeyError, TypeError) as e:
         raise HTTPException(422, f'malformed diagram: {e!r}')
+    except ValueError as e:
+        raise HTTPException(422, str(e))
     except EngineError as e:
         raise HTTPException(500, str(e))
