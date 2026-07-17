@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import AddTableModal from './AddTableModal';
 import TableListItem from './TableListItem';
+import RelationListItem from './RelationListItem';
+
+export default function RightSidebar({ tables = [], edges = [], setEdges, onAddTable, onUpdateTable, onDeleteTable }) {
 
 export default function RightSidebar({ tables = [], onAddTable, onUpdateTable, onDeleteTable }) {
   const [activeTab, setActiveTab] = useState('tables');
@@ -17,9 +20,18 @@ export default function RightSidebar({ tables = [], onAddTable, onUpdateTable, o
     setShowAddModal(false);
   };
 
+  const handleUpdateEdge = (edgeId, data) => {
+    setEdges(eds => eds.map(e => e.id === edgeId ? { ...e, data } : e));
+  };
+
   const filteredTables = tables.filter((t) =>
     t.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const filteredEdges = edges.filter((e) => {
+    const edgeName = (e.data && e.data.name) || '';
+    return edgeName.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <aside className="w-80 min-w-[320px] h-full bg-neutral-0 border-l border-neutral-300 flex flex-col box-border relative overflow-hidden">
@@ -161,6 +173,32 @@ export default function RightSidebar({ tables = [], onAddTable, onUpdateTable, o
                 table={table}
                 onUpdate={onUpdateTable}
                 onDelete={() => onDeleteTable(table.id)}
+              />
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Relation List */}
+      {activeTab === 'relations' && (
+        <div className="flex-1 overflow-y-auto">
+          {filteredEdges.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-40 gap-2 text-neutral-400">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10" />
+                <line x1="1" y1="1" x2="23" y2="23" />
+              </svg>
+              <span className="text-[13px]">
+                {edges.length === 0 ? 'No relationships yet' : 'No results'}
+              </span>
+            </div>
+          ) : (
+            filteredEdges.map((edge) => (
+              <RelationListItem
+                key={edge.id}
+                edge={edge}
+                tables={tables}
+                onUpdate={handleUpdateEdge}
               />
             ))
           )}
